@@ -1,0 +1,12 @@
+---
+- name: Test playbook for POAP server
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - vars/secrets.yml
+  tasks:
+    - name: Debug message
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ admins }}"

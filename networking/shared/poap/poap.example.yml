@@ -1,0 +1,23 @@
+---
+
+credentials:
+  - user1:
+      pwd: type 5 password hash
+      ssh-key: rsa public ssh key
+      role: network-admin
+
+  - user2:
+      pwd: type 5 password hash
+      ssh-key: rsa public ssh key
+      role: network-admin
+
+switch-img: nxos64-cs.10.4.3.F.bin
+
+switch-id:
+  - SW1:
+      mac_address: aaaa.bbbb.cccc
+      ipv4_address: 192.168.0.10/24
+
+  - SW2:
+      mac_address: dddd.eeee.ffff
+      ipv4_address: 192.168.0.20/24

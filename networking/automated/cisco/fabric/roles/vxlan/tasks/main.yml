@@ -1,0 +1,12 @@
+- name: Create the VXLAN interface
+  cisco.nxos.nxos_interfaces:
+    config:
+    - name: nve1
+      enabled: true
+
+- name: Configure the VXLAN VTEP interface
+  cisco.nxos.nxos_vxlan_vtep:
+    interface: nve1
+    host_reachability: true
+    source_interface: "{{ loopbacks | selectattr('description','equalto','Router-ID') | map(attribute='iface') | first }}"
+    description: default

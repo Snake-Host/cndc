@@ -1,0 +1,55 @@
+#NOTE: The Cisco Nexus 9000v virtual switches do not accept 9216 as system jumbomtu thus the 9214 value, I think it's due to a bug.
+- name: Create the port-channel host access interfaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        mode: layer2
+        mtu: 9214
+        enabled: false
+        description: Port-channel host interface
+  loop: "{{ host_interfaces }}"
+
+- name: Configure the physical host access interfaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.1 }}"
+        mode: layer2
+        mtu: 9214
+        enabled: false
+        description: Physical host interface
+  loop: "{{ query('subelements', host_interfaces, 'members') }}"
+
+- name: Add the the physical host access interfaces to the port-channel interfaces
+  cisco.nxos.nxos_lag_interfaces:                                                               
+    config:                                                                                     
+      # item.0 refers to the parent (the port-channel dict)                                     
+      - name: "{{ item.0.iface }}"                                                              
+        members:                                                                                
+          # item.1 refers to the child (the specific ethernet member)                           
+          - member: "{{ item.1 }}"                                                              
+            mode: passive                                                                       
+  # The 'subelements' query combines the parent 'host_interfaces' with the child 'members' list 
+  loop: "{{ query('subelements', host_interfaces, 'members') }}"                                
+
+- name: Enable the port-channel host access interfaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        enabled: true
+  loop: "{{ host_interfaces }}"
+
+- name: Enable the physical host access interfaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.1 }}"
+        enabled: true
+  loop: "{{ query('subelements', host_interfaces, 'members') }}"
+
+- name: Enable trunking on the host access interfaces
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        mode: trunk
+        trunk:
+          native_vlan: "{{ native_vlan }}"
+  loop: "{{ host_interfaces }}"

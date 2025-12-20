@@ -1,0 +1,12 @@
+---
+
+loopbacks:
+  - { iface: loopback0, addr: 192.168.10.10, mask: 32, description: Router-ID }
+
+fabric_interfaces:
+  - { iface: Ethernet1/1 }
+  - { iface: Ethernet1/2 }
+  - { iface: Ethernet1/3 }
+  - { iface: Ethernet1/4 }
+  - { iface: Ethernet1/5 }
+  - { iface: Ethernet1/6 }

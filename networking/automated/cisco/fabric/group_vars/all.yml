@@ -1,0 +1,23 @@
+---
+
+ansible_user: ansible
+ansible_ssh_private_key_file: ~/.ssh/ansible_rsa
+ansible_connection: network_cli
+ansible_network_os: cisco.nxos.nxos
+
+ospf_underlay:
+  process_id: UNDERLAY
+  area_id: 0.0.0.0
+  maximum_paths: 16 # This value affects the ECMP aspect of OSPF, beware of it because it affects both the spines and leaves which may not have the same amount of fabric links.
+
+anycast_rp_loopback: { iface: loopback1, addr: 192.168.11.100, mask: 32, description: Anycast-RP }
+
+asn: 65001
+
+native_vlan: 5
+
+core_vni:
+  - { vni: 10010, vlan: 10, mgroup: 239.0.0.10, name: PVE }
+  - { vni: 10020, vlan: 20, mgroup: 239.0.0.20, name: SAN }
+  - { vni: 10030, vlan: 30, mgroup: 239.0.0.30, name: IN-WAN }
+  - { vni: 10040, vlan: 40, mgroup: 239.0.0.40, name: OUT-WAN }
