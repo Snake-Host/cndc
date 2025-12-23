@@ -43,12 +43,12 @@
 - hosts: leaves
   gather_facts: no
   roles:
-    - host-access
+    - core-vni
 
 - hosts: leaves
   gather_facts: no
   roles:
-    - core-vni
+    - host-access
 
 - hosts: all
   gather_facts: no

@@ -8,3 +8,12 @@ CNDC is designed not only for the previous matter but also to dive in a learning
 
 For the official documentation refer to the following website:
 https://doc.zerith.cloud/
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+
+If you want to use this software in a proprietary product, SaaS, or commercial
+environment without the obligations of AGPLv3, a commercial license is available.
+
+Contact: contact@zerith.cloud
