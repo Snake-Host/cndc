@@ -16,7 +16,7 @@ Unless otherwise stated, all Contributions submitted to the Project are licensed
 Contributions may be submitted via source code repositories, pull requests, patches, issue trackers, or any other communication channels designated by Us.
 
 **4. Retention of Copyright**
-**You retain all copyright ownership** in and to Your Contributions. This Agreement does not transfer your copyright ownership to Us. You simply grant Us the permissions explicitly stated in Section 3.
+**You retain all copyright ownership** in and to Your Contributions. This Agreement does not transfer your copyright ownership to Us. You simply grant Us the permissions explicitly stated in Section 5.
 
 **5. Grant of Rights**
 Subject to the terms and conditions of this Agreement, You hereby grant to Us and to recipients of software distributed by Us a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to:
@@ -39,4 +39,4 @@ If You institute patent litigation against any entity alleging that the Work or 
 You represent that You are the copyright owner of the Contribution or that You are legally authorized to grant the rights set out in this Agreement. You represent that each of Your Contributions is Your original creation.
 
 **8. No Warranty**
-Except for the warranties set forth in Section 5, You provide Your Contributions on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
+Except for the warranties set forth in Section 7, You provide Your Contributions on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
