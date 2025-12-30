@@ -1,0 +1,1 @@
+../../../../shared/poap/cfg_gen.py

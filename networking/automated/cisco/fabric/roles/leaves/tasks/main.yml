@@ -1,0 +1,72 @@
+---
+
+########################## ENABLE THE REQUIRED FEATURES ##########################
+
+- name: Enable the required features
+  cisco.nxos.nxos_feature:
+    feature: "{{ item }}"
+    state: enabled
+  loop:
+    - lacp
+    - dhcp
+    - ospf
+    - bgp
+    - pim
+    - vn-segment-vlan-based
+    - nv overlay
+
+- name: Enable system jumbomtu
+  cisco.nxos.nxos_config:
+    lines:
+      - system jumbomtu 9214
+
+- name: Enable the EVPN capability
+  cisco.nxos.nxos_evpn_global:
+    nv_overlay_evpn: true
+
+########################## CONFIGURE THE LOOPBACK INTERFACES ##########################
+
+- name: Configure the loopback interfaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        description: "{{ item.description }}"
+        enabled: true
+  loop: "{{ loopbacks }}"
+
+- name: Configure the loopback interfaces ip address
+  cisco.nxos.nxos_l3_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        ipv4:
+          - address: "{{ item.addr }}/{{ item.mask }}"
+  loop: "{{ loopbacks }}"
+
+########################## CONFIGURE THE PHYSICAL INTERFACES ##########################
+
+#NOTE: it's important to set the fabric interfaces into routed mode before fixing the mtu especially for the leaf switches
+
+- name: Enable and switche the fabric interfaces to routed mode
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        description: Fabric interface
+        mode: layer3
+        enabled: true
+  loop: "{{ fabric_interfaces }}"
+
+- name: Enable jumbo frame on the fabric intrafaces
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ item.iface }}"
+        mtu: 9000
+  loop: "{{ fabric_interfaces }}"
+
+- name: Configure the fabric interfaces ip address using ip unnumbered
+  cisco.nxos.nxos_config:
+    lines:
+      - medium p2p
+      - ip unnumbered {{ loopbacks | selectattr('description','equalto','Router-ID') | map(attribute='iface') | first }}
+    parents:
+      - interface {{ item.iface }}
+  loop: "{{ fabric_interfaces }}"

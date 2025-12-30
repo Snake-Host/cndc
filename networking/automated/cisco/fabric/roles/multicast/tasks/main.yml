@@ -1,0 +1,12 @@
+---
+
+- name: Configure the multicast on fabric inetrfaces using PIM
+  cisco.nxos.nxos_pim_interface:
+    interface: "{{ item.iface }}"
+    sparse: true
+  loop: "{{ loopbacks + fabric_interfaces }}"
+
+- name: Configure the multicast Rendez-Vous point
+  cisco.nxos.nxos_pim_rp_address:
+    rp_address: "{{ anycast_rp_loopback.addr }}"
+    group_list: 239.0.0.0/8

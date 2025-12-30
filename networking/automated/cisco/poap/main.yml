@@ -1,0 +1,135 @@
+- hosts: poap-srv
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - vars/secrets.yml
+    - vars/trivial.yml
+  tasks:
+
+    - name: Upgrade system packages
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - tftpd-hpa
+        - isc-dhcp-server
+        - python3-passlib
+        - python3-yaml
+
+    - name: Create and modify TFTP directories related to the POAP process
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+        owner: "tftp"
+        group: "tftp"
+      loop:
+        - { path: "/srv/tftp/", mode: "0775" }
+        - { path: "/srv/tftp/cfg/", mode: "0775" }
+        - { path: "/srv/tftp/poap/", mode: "0770" }
+
+    - name: Copy configuration files
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dst }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        backup: "{{ item.backup | default('no') }}"
+      loop:
+        - { src: "tftpd-hpa", dst: "/etc/default/", mode: "0600", owner: "root", group: "root" }
+        - { src: "dhcpd.conf", dst: "/etc/dhcp/", mode: "0600", owner: "root", group: "root" }
+        - { src: "poap.py", dst: "/srv/tftp/", mode: "0664", owner: "tftp", group: "tftp" }
+        - { src: "poap_md5.sh", dst: "/srv/tftp/", mode: "0770", owner: "tftp", group: "tftp" }
+        - { src: "cfg_gen.py", dst: "/srv/tftp/poap/", mode: "0770", owner: "tftp", group: "tftp" }
+        - { src: "md5_hash_gen.py", dst: "/srv/tftp/poap/", mode: "0770", owner: "tftp", group: "tftp" }
+        - { src: "poap.example.yml", dst: "/srv/tftp/poap/", mode: "0440", owner: "tftp", group: "tftp" }
+        - { src: "requirements.txt", dst: "/srv/tftp/poap/", mode: "0440", owner: "tftp", group: "tftp" }
+        - { src: "README.md", dst: "/srv/tftp/poap/", mode: "0440", owner: "tftp", group: "tftp" }
+
+    - name: Check if the poap.yml file exists on the controller
+      stat:
+        path: ./files/poap.yml
+      delegate_to: localhost
+      register: poap_yml_status
+
+    - name: Copy poap.yml config file if present
+      ansible.builtin.copy:
+        src: "poap.yml"
+        dest: "/srv/tftp/poap/poap.yml"
+        mode: "0660"
+        owner: "tftp"
+        group: "tftp"
+      when: poap_yml_status.stat.exists
+
+    - name: Configure poap file with TFTP server IP
+      ansible.builtin.lineinfile:
+        path: /srv/tftp/poap.py
+        regexp: "^srv ="
+        line: "srv = \"{{ tftp_server_ipv4_address.split('/')[0] }}\""
+
+    - name: Run POAP MD5 hash generation script
+      ansible.builtin.script:
+        chdir: /srv/tftp/
+        cmd: ./poap_md5.sh
+
+    - name: Generate the switches poap config files if the poap.yml is present
+      ansible.builtin.script:
+        chdir: /srv/tftp/poap/
+        cmd: cfg_gen.py
+      when: poap_yml_status.stat.exists
+
+    - name: Change ownership and permissions of the POAP hash file
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        recurse: "{{ item.recurse }}"
+        mode: "{{ item.mode }}"
+        owner: "tftp"
+        group: "tftp"
+      loop:
+        - { path: "/srv/tftp/poap.py.md5", recurse: no, mode: "0664" }
+        - { path: "/srv/tftp/cfg/", recurse: yes, mode: "0664"}
+        - { path: "/srv/tftp/cfg/", recurse: no, mode: "0775"}
+
+    - name: Configure the DHCP server to listen on the correct interface
+      ansible.builtin.lineinfile:
+        path: /etc/default/isc-dhcp-server
+        regexp: 'INTERFACESv4=""'
+        line: 'INTERFACESv4="{{ dhcp_server_interface }}"'
+
+    - name: Configure the network interface for DHCP server
+      community.general.interfaces_file:
+        iface: "{{ dhcp_server_interface }}"
+        address_family: inet
+        option: "{{ item.option}}"
+        value: "{{ item.value}}"
+        state: present
+        owner: root
+        group: root
+        mode: "0644"
+      loop:
+        - { option: "method", value: "static" }
+        - { option: "address", value: "{{ dhcp_server_ipv4_address }}" }
+
+    - name: Ensure services are started and enabled
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      loop:
+        - networking
+        - tftpd-hpa
+        - isc-dhcp-server
+
+    - name: Add admin users to the tftp group
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: tftp
+        append: yes
+        state: present
+      loop: "{{ admins }}"

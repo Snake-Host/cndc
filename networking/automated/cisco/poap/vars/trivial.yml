@@ -1,0 +1,5 @@
+dhcp_server_interface: eth1
+
+dhcp_server_ipv4_address: "192.168.255.1/24"
+
+tftp_server_ipv4_address: "{{ dhcp_server_ipv4_address }}"

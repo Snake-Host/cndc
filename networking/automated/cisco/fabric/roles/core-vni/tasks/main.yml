@@ -1,0 +1,14 @@
+- name: Create the VLAN and accociate it with it's VNI
+  cisco.nxos.nxos_vlans:
+    config:
+    - name: "{{ item.name }}"
+      vlan_id: "{{ item.vlan }}"
+      mapped_vni: "{{ item.vni }}"
+  loop: "{{ core_vni }}"
+
+- name: Configure the VNI on the VTEP
+  cisco.nxos.nxos_vxlan_vtep_vni:
+    interface: nve1
+    vni: "{{ item.vni }}"
+    multicast_group: "{{ item.mgroup }}"
+  loop: "{{ core_vni }}"

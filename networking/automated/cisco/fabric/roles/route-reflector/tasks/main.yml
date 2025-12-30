@@ -1,0 +1,13 @@
+- name: Enable the route reflector role for the concerned spine switches
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    config:
+      as_number: "{{ asn }}"
+      neighbors:
+        - neighbor_address: "{{ hostvars[item].loopbacks | selectattr('description','equalto','Router-ID') | map(attribute='addr') | first }}"
+          address_family:
+            - afi: l2vpn
+              safi: evpn
+              send_community:
+                both: true
+              route_reflector_client: true
+  loop: "{{ groups['leaves'] }}"

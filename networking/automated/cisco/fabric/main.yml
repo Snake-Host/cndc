@@ -1,0 +1,70 @@
+---
+
+- hosts: spines
+  gather_facts: no
+  roles:
+    - role: spines
+
+- hosts: leaves
+  gather_facts: no
+  roles:
+    - role: leaves
+
+- hosts: all
+  gather_facts: no
+  roles:
+    - role: ospf-underlay
+
+- hosts: all
+  gather_facts: no
+  roles:
+    - multicast
+
+- hosts: anycast-rp
+  gather_facts: no
+  roles:
+    - role: anycast-rp
+
+- hosts: all
+  gather_facts: no
+  roles:
+    - evpn
+
+- hosts: route-reflector
+  gather_facts: no
+  roles:
+    - route-reflector
+
+- hosts: leaves
+  gather_facts: no
+  roles:
+    - vxlan
+
+- hosts: leaves
+  gather_facts: no
+  roles:
+    - core-vni
+
+- hosts: leaves
+  gather_facts: no
+  roles:
+    - host-access
+
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: Copy the running-config to startup-config
+      cisco.nxos.nxos_config:
+        save_when: always
+
+    - name: Ask if reboot is necessary
+      ansible.builtin.pause:
+        prompt: "Do you want to reboot the switches? (y/N)"
+      register: reboot_answer
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Reboot the switches if necessary
+      cisco.nxos.nxos_reboot:
+        confirm: true
+      when: reboot_answer.user_input | lower in ["y", "yes"]

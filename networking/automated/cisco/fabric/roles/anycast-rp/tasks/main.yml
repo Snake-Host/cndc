@@ -1,0 +1,43 @@
+---
+
+- name: Check if the anycast rp loopback interface is present otherwise this task will fail
+  ansible.builtin.fail:
+    msg: "The required anycast rp loopback interface is not defined!"
+  when: anycast_rp_loopback is not defined
+
+- name: Configure the anycast rp loopback interface
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ anycast_rp_loopback.iface }}"
+        description: "{{ anycast_rp_loopback.description }}"
+        enabled: true
+
+- name: Configure the anycast rp loopback interface ip address
+  cisco.nxos.nxos_l3_interfaces:
+    config:
+      - name: "{{ anycast_rp_loopback.iface }}"
+        ipv4:
+          - address: "{{ anycast_rp_loopback.addr }}/{{ anycast_rp_loopback.mask }}"
+
+- name: Associate the anycast rp loopback interface with the fabric underlay OSPF process
+  cisco.nxos.nxos_ospf_interfaces:
+    config:
+      - name: "{{ anycast_rp_loopback.iface }}"
+        address_family:
+          - afi: ipv4
+            network: point-to-point
+            processes:
+              - process_id: "{{ ospf_underlay.process_id }}"
+                area:
+                  area_id: "{{ ospf_underlay.area_id }}"
+
+- name: Configure the multicast on the anycast loopback interface
+  cisco.nxos.nxos_pim_interface:
+    interface: "{{ anycast_rp_loopback.iface }}"
+    sparse: true
+
+- name: Configure the anycast rp syncronization
+  cisco.nxos.nxos_config:
+    lines: 
+      - ip pim anycast-rp {{ anycast_rp_loopback.addr }} {{ hostvars[item].loopbacks | selectattr('description', 'equalto', 'Router-ID') | map(attribute='addr') | first }}
+  loop: "{{ groups['anycast-rp'] }}"
