@@ -6,9 +6,6 @@ This project serves as a reliable source for cloud enthusiasts, system engineers
 
 CNDC is designed not only for the previous matter but also to dive in a learning journey that helps tackle cloud-native concepts even for beginners, and for advanced skills building, including customizing automation scripts, applying and implementing security best practices, and mostly contributing to the project.
 
-For the official documentation refer to the following website:
-https://doc.zerith.cloud/
-
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
