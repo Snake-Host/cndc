@@ -17,7 +17,7 @@ asn: 65001
 native_vlan: 5
 
 core_vni:
-  - { vni: 10010, vlan: 10, mgroup: 239.0.0.10, name: PVE }
-  - { vni: 10020, vlan: 20, mgroup: 239.0.0.20, name: SAN }
-  - { vni: 10030, vlan: 30, mgroup: 239.0.0.30, name: IN-WAN }
-  - { vni: 10040, vlan: 40, mgroup: 239.0.0.40, name: OUT-WAN }
+  - { vni: 10030, vlan: 30, mgroup: 239.0.0.30, name: PVE }
+  - { vni: 10040, vlan: 40, mgroup: 239.0.0.40, name: SAN }
+  - { vni: 10050, vlan: 50, mgroup: 239.0.0.50, name: IN-WAN }
+  - { vni: 10060, vlan: 60, mgroup: 239.0.0.60, name: OUT-WAN }
