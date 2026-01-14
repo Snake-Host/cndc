@@ -6,7 +6,42 @@ This project serves as a reliable source for cloud enthusiasts, system engineers
 
 CNDC is designed not only for the previous matter but also to dive in a learning journey that helps tackle cloud-native concepts even for beginners, and for advanced skills building, including customizing automation scripts, applying and implementing security best practices, and mostly contributing to the project.
 
-## License
+# Project Structure
+
+1. Project Description
+   - Overview
+   - Intended Audience
+   - Prerequisites
+   - Working Environment
+   - Design Goals & Non-Goals
+2. Networking – VXLAN-EVPN Fabric
+   1. Overview
+   2. Architecture & Design Decisions
+   3. Deployment on Cisco Nexus 9000
+      - Manual Configuration
+      - Automated Deployment
+   4. Deployment on SONiC NOS (v2)
+      - Manual Configuration
+      - Automated Deployment
+3. Platform (Compute & Storage)
+   1. Proxmox Cluster (QEMU/KVM)
+      - Overview
+      - Manual Corosync Deployment (GUI)
+      - Manual Ceph Deployment (GUI)
+   2. Kubernetes/Ceph Cluster
+      - Overview
+      - Architecture & Networking Model
+      - Manual k8s and ceph cluster bootstrap
+      - Automated k8s and ceph cluster provisioning
+      - Kubernetes Storage Rook (v2)
+   3. Multi-cluster Kubernetes (v2)
+4. Operations & Day-2 (v2)
+   - Monitoring & Observability
+   - Upgrades & Lifecycle
+   - Failure Scenarios
+   - Backup & Recovery
+
+# License
 
 This project is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
 
