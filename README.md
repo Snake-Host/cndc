@@ -18,25 +18,25 @@ CNDC is designed not only for the previous matter but also to dive in a learning
 2. Networking – VXLAN-EVPN Fabric
    1. Overview
    2. Architecture & Design Decisions
-   3. Deployment on Cisco Nexus 9000
+   3. Deployment on Cisco Nexus 9000 
       - Manual Configuration
       - Automated Deployment
-   4. Deployment on SONiC NOS (Planned for a future release)
+   4. Deployment on SONiC NOS (Planned for a future release) 
       - Manual Configuration
       - Automated Deployment
 
 3. Platform (Compute & Storage)
-   1. Proxmox Cluster (QEMU/KVM)
+   1. Proxmox Cluster (QEMU/KVM) 
       - Overview
       - Manual Corosync Deployment (GUI)
       - Manual Ceph Deployment (GUI)
-   2. Kubernetes/Ceph Cluster
+   2. Kubernetes/Ceph Cluster 
       - Overview
       - Architecture & Networking Model
-      - Kubernetes cluster bootstraping (Manual & Automated)
       - Ceph cluster bootstraping (Manual & Automated)
-      - Kubernetes Storage Rook (Planned for a future release)
-   3. Multi-cluster Kubernetes (Planned for a future release)
+      - K8s cluster bootstraping (Manual & Automated)
+   3. Kubernetes/Rook Cluster (Planned for a future release)
+   4. Multi-cluster Kubernetes (Planned for a future release)
 
 4. Operations & Day-2 (Planned for a future release)
    - Monitoring & Observability
