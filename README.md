@@ -33,8 +33,8 @@ CNDC is designed not only for the previous matter but also to dive in a learning
    2. Kubernetes/Ceph Cluster
       - Overview
       - Architecture & Networking Model
-      - Manual k8s and ceph cluster bootstrap
-      - Automated k8s and ceph cluster provisioning
+      - Kubernetes cluster bootstraping (Manual & Automated)
+      - Ceph cluster bootstraping (Manual & Automated)
       - Kubernetes Storage Rook (Planned for a future release)
    3. Multi-cluster Kubernetes (Planned for a future release)
 
